@@ -18,6 +18,13 @@ typedef struct Int3D{
     int r;
     int g;
     int b;
+    inline Int3D &operator+=(const Int3D &vector)
+    {
+        r += vector.r;
+        g += vector.g;
+        b += vector.b;
+        return *this;
+    }
 }Int3D;
 
 class Data : public QObject

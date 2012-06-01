@@ -130,7 +130,8 @@ void Data::crackImage()
 
         }
 
-        right<<
+        sumOutNeigh+=vpq[i];
+        right<<sumOutNeigh;
     }
 }
 void Data::test()
@@ -172,4 +173,6 @@ void Data::resetData()
     index.clear();
     fstar.clear();
     indexOut.clear();
+    vpq.clear();
+    right.clear();
 }
