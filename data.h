@@ -45,6 +45,7 @@ public:
         maskImage=mask;
         desImage=des;
         maskPosition=maskPos;
+        resetData();
     }
 
     void checkNeigh(int i, QPoint &q);

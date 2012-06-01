@@ -43,7 +43,7 @@ void MainWindow::on_actionCut_triggered()
 
 void MainWindow::on_actionCrack_Image_triggered()
 {
-    data.resetData();
+
     data.init(ui->widget->subImage,ui->widget->maskImage,
               ui->widget_2->destinationImage,
               ui->widget_2->maskPosition);

@@ -85,15 +85,30 @@ void Data::test()
 {
     QImage t(maskImage.width()+2,maskImage.height()+2,QImage::Format_ARGB32);
 
-    for(int y=-1;y<t.height()+1;y++)
+    for(int y=-1;y<t.height()-1;y++)
     {
-        for(int x=-1;x<t.width()+1;x++)
+        for(int x=-1;x<t.width()-1;x++)
         {
             QPoint p(x,y);
             if(indexOut.count(getId(p)))
-                t.setPixel(x,y,fstar[indexOut[getId(p)]].d);
+                t.setPixel(x+1,y+1,fstar[indexOut[getId(p)]].d);
+            else if(index.count(getId(p)))
+            {
+                int ind=index[getId(p)];
+                int n=neighOut[ind].count();
+                qDebug()<<n;
+                for(int i=0;i<n;i++)
+                {
+                    qDebug()<<neighOut[ind][i];
+
+                }
+                qDebug();
+                if(n!=0)
+                    t.setPixel(x+1,y+1,fstar[neighOut[ind][0]].d);
+
+            }
             else
-                t.setPixel(x,y,qRgb(255,0,0));
+                t.setPixel(x+1,y+1,qRgb(255,0,0));
         }
     }
 
