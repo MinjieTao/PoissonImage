@@ -34,6 +34,40 @@ void Data::checkNeigh(int i, QPoint &q)
         }
     }
 }
+void Data::getVpq()
+{
+    for(int i=0;i<fp.count();i++)
+    {
+        int sumR=sumG=sumB=0;
+        foreach(int j,neighIn[i])
+        {
+            QRgb col = fp[j];
+            sumR += qRed(col.d);
+            sumG += qGreen(col.d);
+            sumB += qBlue(col.d);
+        }
+
+        foreach(int j,neighOut[i])
+        {
+            QRgb col = fstar[j];
+            sumR += qRed(col.d);
+            sumG += qGreen(col.d);
+            sumB += qBlue(col.d);
+        }
+
+        QRgb val = fp[i];
+        sumR -= 4*qRed(val);
+        sumG -= 4*qGreen(val);
+        sumB -= 4*qBlue(val);
+
+        Int3D NewVpq;
+        NewVpq.r=sumR;
+        NewVpq.g=sumG;
+        NewVpq.b=sumB;
+
+        vpq<<NewVpq;
+    }
+}
 
 void Data::crackImage()
 {
@@ -79,6 +113,24 @@ void Data::crackImage()
         checkNeigh(i,newNeigh);
         newNeigh=p+QPoint(0,-1);
         checkNeigh(i,newNeigh);
+    }
+
+    getVpq();
+
+    for(int i=0;i<fp.count();i++)
+    {
+        Int3D sumOutNeigh;
+        sumOutNeigh.r=sumOutNeigh.g=sumOutNeigh.b=0;
+        foreach(int j, neighOut[i])
+        {
+            qRgb col=fstar[j].d;
+            sumOutNeigh.r += qRed(col);
+            sumOutNeigh.g += qGreen(col);
+            sumOutNeigh.b += qBlue(col);
+
+        }
+
+        right<<
     }
 }
 void Data::test()

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QMap>
 #include <QVector>
+#include <QVector3D>
 #include <QImage>
 #include <QDebug>
 
@@ -13,6 +14,11 @@ typedef struct PixData{
     QRgb d;
 }pixData;
 
+typedef struct Int3D{
+    int r;
+    int g;
+    int b;
+}Int3D;
 
 class Data : public QObject
 {
@@ -24,6 +30,8 @@ public:
     QVector<pixData> fp;
     QMap<int,int> indexOut;
     QVector<pixData> fstar;
+
+
     QImage subImage;
     QImage maskImage;
     QImage testImage;
@@ -33,6 +41,8 @@ public:
     QMap<int,QVector<int> > neighOut;
 
     QPoint maskPosition;
+    QVector<Int3D> vpq;
+    QVector<Int3D> right;
 
 
 
@@ -51,6 +61,7 @@ public:
     void checkNeigh(int i, QPoint &q);
 
     void crackImage();
+    void getVpq();
     void test();
     
 signals:
