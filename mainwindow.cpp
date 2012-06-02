@@ -46,7 +46,9 @@ void MainWindow::on_actionCrack_Image_triggered()
 
     data.init(ui->widget->subImage,ui->widget->maskImage,
               ui->widget_2->destinationImage,
-              ui->widget_2->maskPosition);
+              ui->widget_2->maskPosition,
+              ui->widget->sourceImage,
+              ui->widget->srcPosition);
     data.crackImage();
 }
 
@@ -55,4 +57,11 @@ void MainWindow::on_actionTest_triggered()
     data.test();
     ui->widget_3->maskImage=data.testImage;
     ui->widget_3->update();
+    ui->widget_2->subImage=data.testImage;
+    ui->widget_2->update();
+}
+
+void MainWindow::on_actionCal_SparseMatrix_triggered()
+{
+    data.calculate();
 }

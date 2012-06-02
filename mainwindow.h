@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "data.h"
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -28,6 +29,8 @@ private slots:
     void on_actionCrack_Image_triggered();
 
     void on_actionTest_triggered();
+
+    void on_actionCal_SparseMatrix_triggered();
 
 private:
     Ui::MainWindow *ui;

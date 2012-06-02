@@ -19,6 +19,7 @@ public:
     QImage maskImage;
     QImage subImage;
     QVector<QPoint> boundary;
+    QPoint srcPosition;
 
 signals:
     void resetSub();

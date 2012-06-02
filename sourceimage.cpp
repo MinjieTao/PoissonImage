@@ -102,6 +102,8 @@ void SourceImage::mouseReleaseEvent(QMouseEvent *)
         if(boundary[i].ry()>max_y)
             max_y=boundary[i].ry();
     }
+    srcPosition.rx()=min_x;
+    srcPosition.ry()=min_y;
     QVector<QPoint> inner;
     inner.resize(max_y-min_y+1);
     for(int i=0;i<(max_y-min_y+1);i++ )

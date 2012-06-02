@@ -7,6 +7,7 @@
 #include <QVector3D>
 #include <QImage>
 #include <QDebug>
+#include "sparsematrixsolver.h"
 
 
 typedef struct PixData{
@@ -41,6 +42,7 @@ public:
 
     QImage subImage;
     QImage maskImage;
+    QImage srcImage;
     QImage testImage;
     QImage desImage;
 
@@ -48,20 +50,25 @@ public:
     QMap<int,QVector<int> > neighOut;
 
     QPoint maskPosition;
+    QPoint srcPosition;
     QVector<Int3D> vpq;
+    QVector<pixData> gOmega;
     QVector<Int3D> right;
 
 
 
 
     void init(QImage &sub, QImage &mask,
-              QImage &des, QPoint maskPos)
+              QImage &des, QPoint maskPos,
+              QImage &src, QPoint srcPos)
     {
         //subImage=sub.convertToFormat(QImage::Format_RGB32);
         subImage=sub;
         maskImage=mask;
         desImage=des;
         maskPosition=maskPos;
+        srcImage=src;
+        srcPosition=srcPos;
         resetData();
     }
 
@@ -69,6 +76,7 @@ public:
 
     void crackImage();
     void getVpq();
+    void calculate();
     void test();
     
 signals:

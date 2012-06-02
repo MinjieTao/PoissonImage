@@ -17,12 +17,21 @@ SOURCES += main.cpp\
     sourceimage.cpp \
     destinationimage.cpp \
     maskimage.cpp \
-    data.cpp
+    data.cpp \
+    sparsematrixsolver.cpp
 
 HEADERS  += mainwindow.h \
     sourceimage.h \
     destinationimage.h \
     maskimage.h \
-    data.h
+    data.h \
+    sparsematrixsolver.h
 
 FORMS    += mainwindow.ui
+
+win32: LIBS += -L$$PWD/ -llibpardiso412-WIN-X86
+
+INCLUDEPATH += $$PWD/
+DEPENDPATH += $$PWD/
+
+win32: PRE_TARGETDEPS += $$PWD/libpardiso412-WIN-X86.lib
