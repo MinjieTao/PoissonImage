@@ -15,14 +15,24 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="SourceImage" name="widget" native="true"/>
-    </item>
     <item row="0" column="1">
      <widget class="DestinationImage" name="widget_2" native="true"/>
     </item>
+    <item row="0" column="0">
+     <widget class="SourceImage" name="widget" native="true"/>
+    </item>
     <item row="0" column="2">
      <widget class="MaskImage" name="widget_3" native="true"/>
+    </item>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="push">
+      <property name="text">
+       <string>Jacobi</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QSpinBox" name="spinBox"/>
     </item>
    </layout>
   </widget>
@@ -57,6 +67,7 @@
      <string>Get Data</string>
     </property>
     <addaction name="actionCrack_Image"/>
+    <addaction name="actionCrack_Image_Mixed"/>
     <addaction name="actionCal_SparseMatrix"/>
    </widget>
    <widget class="QMenu" name="menuTest">
@@ -97,6 +108,11 @@
   <action name="actionCal_SparseMatrix">
    <property name="text">
     <string>Cal SparseMatrix</string>
+   </property>
+  </action>
+  <action name="actionCrack_Image_Mixed">
+   <property name="text">
+    <string>Crack Image(Mixed)</string>
    </property>
   </action>
  </widget>

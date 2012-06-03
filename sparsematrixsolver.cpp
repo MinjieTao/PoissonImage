@@ -57,7 +57,7 @@ int SparseMatrixSolver::presolve()
 
 
     iparm[2]  = 1;
-    iparm[8] = 10;
+    iparm[8] = 2;
     mtype = -2;        /* Real symmetric matrix */
     nrhs = 1;          /* Number of right hand sides. */
 

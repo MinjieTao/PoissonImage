@@ -18,14 +18,16 @@ SOURCES += main.cpp\
     destinationimage.cpp \
     maskimage.cpp \
     data.cpp \
-    sparsematrixsolver.cpp
+    sparsematrixsolver.cpp \
+    jacobi.cpp
 
 HEADERS  += mainwindow.h \
     sourceimage.h \
     destinationimage.h \
     maskimage.h \
     data.h \
-    sparsematrixsolver.h
+    sparsematrixsolver.h \
+    jacobi.h
 
 FORMS    += mainwindow.ui
 

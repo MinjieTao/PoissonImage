@@ -8,6 +8,7 @@
 #include <QImage>
 #include <QDebug>
 #include "sparsematrixsolver.h"
+#include "jacobi.h"
 
 
 typedef struct PixData{
@@ -53,6 +54,7 @@ public:
     QPoint srcPosition;
     QVector<Int3D> vpq;
     QVector<pixData> gOmega;
+    QVector<pixData> fstarOmega;
     QVector<Int3D> right;
 
 
@@ -74,21 +76,18 @@ public:
 
     void checkNeigh(int i, QPoint &q);
 
-    void crackImage();
+    void crackImage(int m);
+    void getVpqNaive();
     void getVpq();
     void calculate();
+    void solveJacobi(int n);
     void test();
     
 signals:
     
 public slots:
     void resetData();
-    void resetBoundary()
-    {
-        resetData();
-        crackImage();
 
-    }
     
 };
 

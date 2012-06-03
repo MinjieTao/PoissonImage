@@ -49,7 +49,7 @@ void MainWindow::on_actionCrack_Image_triggered()
               ui->widget_2->maskPosition,
               ui->widget->sourceImage,
               ui->widget->srcPosition);
-    data.crackImage();
+    data.crackImage(0);
 }
 
 void MainWindow::on_actionTest_triggered()
@@ -64,4 +64,29 @@ void MainWindow::on_actionTest_triggered()
 void MainWindow::on_actionCal_SparseMatrix_triggered()
 {
     data.calculate();
+}
+
+
+void MainWindow::on_push_clicked()
+{
+    int n=ui->spinBox->value();
+    data.solveJacobi(n);
+}
+
+void MainWindow::on_actionCrack_Image_Mixed_triggered()
+{
+    data.init(ui->widget->subImage,ui->widget->maskImage,
+              ui->widget_2->destinationImage,
+              ui->widget_2->maskPosition,
+              ui->widget->sourceImage,
+              ui->widget->srcPosition);
+    data.crackImage(1);
+}
+void MainWindow::on_pushButton_toggled(bool)
+{
+
+}
+void MainWindow::on_pushButton_clicked()
+{
+
 }

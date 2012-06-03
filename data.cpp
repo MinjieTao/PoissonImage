@@ -41,9 +41,9 @@ void Data::checkNeigh(int i, QPoint &q)
         }
     }
 }
-
-void Data::getVpq()
+void Data::getVpqNaive()
 {
+    vpq.clear();
     for(int i=0;i<fp.count();i++)
     {
         int sumR,sumG,sumB;
@@ -65,20 +65,93 @@ void Data::getVpq()
         }
 
         pixData val = fp[i];
-        sumR -= 4*qRed(val.d);
-        sumG -= 4*qGreen(val.d);
-        sumB -= 4*qBlue(val.d);
+        sumR = 4*qRed(val.d)-sumR;
+        sumG = 4*qGreen(val.d)-sumG;
+        sumB = 4*qBlue(val.d)-sumB;
 
         Int3D NewVpq;
         NewVpq.r=sumR;
         NewVpq.g=sumG;
         NewVpq.b=sumB;
-
         vpq<<NewVpq;
+    }
+
+}
+
+void Data::getVpq()
+{
+    vpq.clear();
+    for(int i=0;i<fp.count();i++)
+    {
+
+
+        int r=0, g=0, b=0;
+        foreach(int j,neighIn[i])
+        {
+            pixData col=fp[j];
+            pixData col2=fstarOmega[j];
+            int del=qRed(fp[i].d)-qRed(col.d);
+            int del2=qRed(fstarOmega[i].d)-qRed(col2.d);
+
+            if((del>0?del:-del)>(del2>0?del2:-del2))
+                r+=del;
+            else
+                r+=del2;
+
+            del=qGreen(fp[i].d)-qGreen(col.d);
+            del2=qGreen(fstarOmega[i].d)-qGreen(col2.d);
+
+            if((del>0?del:-del)>(del2>0?del2:-del2))
+                g+=del;
+            else
+                g+=del2;
+
+            del=qBlue(fp[i].d)-qBlue(col.d);
+            del2=qBlue(fstarOmega[i].d)-qBlue(col2.d);
+
+            if((del>0?del:-del)>(del2>0?del2:-del2))
+                b+=del;
+            else
+                b+=del2;
+        }
+        foreach(int j,neighOut[i])
+        {
+            pixData col=gOmega[j];
+            pixData col2=fstar[j];
+            int del=qRed(fp[i].d)-qRed(col.d);
+            int del2=qRed(fstarOmega[i].d)-qRed(col2.d);
+
+            if((del>0?del:-del)>(del2>0?del2:-del2))
+                r+=del;
+            else
+                r+=del2;
+
+            del=qGreen(fp[i].d)-qGreen(col.d);
+            del2=qGreen(fstarOmega[i].d)-qGreen(col2.d);
+
+            if((del>0?del:-del)>(del2>0?del2:-del2))
+                g+=del;
+            else
+                g+=del2;
+
+            del=qBlue(fp[i].d)-qBlue(col.d);
+            del2=qBlue(fstarOmega[i].d)-qBlue(col2.d);
+
+            if((del>0?del:-del)>(del2>0?del2:-del2))
+                b+=del;
+            else
+                b+=del2;
+        }
+        Int3D newVpq;
+        newVpq.r=r;
+        newVpq.g=g;
+        newVpq.b=b;
+
+        vpq<<newVpq;
     }
 }
 
-void Data::crackImage()
+void Data::crackImage(int m)
 {
     if(subImage.isNull()||maskImage.isNull())
         return;
@@ -103,6 +176,11 @@ void Data::crackImage()
                newPix.d=val;
                 fp<<newPix;
                 index[getId(newPix.p)]=fp.count()-1;
+                QRgb val1=desImage.pixel(maskPosition+p);
+                pixData newP;
+                newP.p=p;
+                newP.d=val1;
+                fstarOmega<<newP;
 
            }
 
@@ -124,7 +202,10 @@ void Data::crackImage()
         checkNeigh(i,newNeigh);
     }
 
-    getVpq();
+    if(m==1)
+        getVpq();
+    else
+        getVpqNaive();
 
     for(int i=0;i<fp.count();i++)
     {
@@ -185,47 +266,209 @@ void Data::calculate()
         resultB<<j;
     }
     solver2.postsolve();
-//    int max=0, min=255;
+    int maxOfOrigin=0;int minOfOrigin=255;
+    int maxOfNow=0;int minOfNow=255;
 
+    for(int j=0;j<fp.count();j++)
+    {
+        if(resultR[j]>maxOfNow)
+            maxOfNow=resultR[j];
+        if(resultR[j]<minOfNow)
+            minOfNow=resultR[j];
+        if(qRed(fp[j].d)>maxOfOrigin)
+            maxOfOrigin=qRed(fp[j].d);
+        if(qRed(fp[j].d)<minOfOrigin)
+            minOfOrigin=qRed(fp[j].d);
+    }
     foreach(int j,resultR)
     {
-        j=j>255?255:(j<0?0:j);
+        j=((j-minOfNow)*1.0)*(maxOfOrigin-minOfOrigin)/(maxOfNow-minOfNow)+minOfOrigin;
     }
-//    foreach(int j,resultR)
-//    {
-//        j=((j-min)*1.0)*255/(max-min);
-//    }
-//    max=0;
-//    min=255;
+
+    maxOfOrigin=0;
+    minOfOrigin=255;
+    maxOfNow=0;
+    minOfNow=255;
+
+    for(int j=0;j<fp.count();j++)
+    {
+        if(resultG[j]>maxOfNow)
+            maxOfNow=resultG[j];
+        if(resultG[j]<minOfNow)
+            minOfNow=resultG[j];
+        if(qGreen(fp[j].d)>maxOfOrigin)
+            maxOfOrigin=qGreen(fp[j].d);
+        if(qGreen(fp[j].d)<minOfOrigin)
+            minOfOrigin=qGreen(fp[j].d);
+    }
+
     foreach(int j, resultG)
     {
-        j=j>255?255:(j<0?0:j);
+        j=((j-minOfNow)*1.0)*(maxOfOrigin-minOfOrigin)/(maxOfNow-minOfNow)+minOfOrigin;
+
+    }
+
+
+    maxOfOrigin=0, minOfOrigin=255;
+    maxOfNow=0, minOfNow=255;
+
+    for(int j=0;j<fp.count();j++)
+    {
+        if(resultB[j]>maxOfNow)
+            maxOfNow=resultB[j];
+        if(resultB[j]<minOfNow)
+            minOfNow=resultB[j];
+        if(qBlue(fp[j].d)>maxOfOrigin)
+            maxOfOrigin=qBlue(fp[j].d);
+        if(qBlue(fp[j].d)<minOfOrigin)
+            minOfOrigin=qBlue(fp[j].d);
     }
 //    foreach(int j, resultG)
 //    {
-//         j=((j-min)*1.0)*255/(max-min);
+//        if(j>max)
+//            max=j;
+//        if(j<min)
+//            min=j;
 //    }
+//    foreach(int j, resultB)
+//    {
+//        if(j>max)
+//            max=j;
+//        if(j<min)
+//            min=j;
+//    }
+
+
+
 
     foreach(int j, resultB)
     {
-        j=j>255?255:(j<0?0:j);
+        j=((j-minOfNow)*1.0)*(maxOfOrigin-minOfOrigin)/(maxOfNow-minOfNow)+minOfOrigin;
+
     }
-
-
-
-
-
-//    foreach(int j, resultB)
-//    {
-//         j=((j-min)*1.0)*255/(max-min);
-//    }
-
     for(int i=0;i<fp.count();i++)
     {
         QRgb newVal=qRgb(resultR[i],resultG[i],resultB[i]);
         fp[i].d=newVal;
     }
 
+}
+
+void Data::solveJacobi(int n)
+{
+    Jacobi s1,s2,s3;
+    QVector<double> r,g,b;
+    QVector<int> resultR, resultG, resultB;
+
+
+    for(int i=0;i<right.count();i++)
+    {
+        r<<right[i].r;
+        g<<right[i].g;
+        b<<right[i].b;
+    }
+
+    s1.init(neighIn,r);
+    s2.init(neighIn,g);
+    s3.init(neighIn,b);
+
+    s1.cal(n);
+    s2.cal(n);
+    s3.cal(n);
+
+    for(int i=0;i<right.count();i++)
+    {
+        resultR<<s1.x[i];
+        resultG<<s2.x[i];
+        resultB<<s3.x[i];
+    }
+
+    int maxOfOrigin=0;int minOfOrigin=255;
+    int maxOfNow=0;int minOfNow=255;
+
+    for(int j=0;j<fp.count();j++)
+    {
+        if(resultR[j]>maxOfNow)
+            maxOfNow=resultR[j];
+        if(resultR[j]<minOfNow)
+            minOfNow=resultR[j];
+        if(qRed(fp[j].d)>maxOfOrigin)
+            maxOfOrigin=qRed(fp[j].d);
+        if(qRed(fp[j].d)<minOfOrigin)
+            minOfOrigin=qRed(fp[j].d);
+    }
+    foreach(int j,resultR)
+    {
+        j=((j-minOfNow)*1.0)*(maxOfOrigin-minOfOrigin)/(maxOfNow-minOfNow)+minOfOrigin;
+    }
+
+    maxOfOrigin=0;
+    minOfOrigin=255;
+    maxOfNow=0;
+    minOfNow=255;
+
+    for(int j=0;j<fp.count();j++)
+    {
+        if(resultG[j]>maxOfNow)
+            maxOfNow=resultG[j];
+        if(resultG[j]<minOfNow)
+            minOfNow=resultG[j];
+        if(qGreen(fp[j].d)>maxOfOrigin)
+            maxOfOrigin=qGreen(fp[j].d);
+        if(qGreen(fp[j].d)<minOfOrigin)
+            minOfOrigin=qGreen(fp[j].d);
+    }
+
+    foreach(int j, resultG)
+    {
+        j=((j-minOfNow)*1.0)*(maxOfOrigin-minOfOrigin)/(maxOfNow-minOfNow)+minOfOrigin;
+
+    }
+
+
+    maxOfOrigin=0, minOfOrigin=255;
+    maxOfNow=0, minOfNow=255;
+
+    for(int j=0;j<fp.count();j++)
+    {
+        if(resultB[j]>maxOfNow)
+            maxOfNow=resultB[j];
+        if(resultB[j]<minOfNow)
+            minOfNow=resultB[j];
+        if(qBlue(fp[j].d)>maxOfOrigin)
+            maxOfOrigin=qBlue(fp[j].d);
+        if(qBlue(fp[j].d)<minOfOrigin)
+            minOfOrigin=qBlue(fp[j].d);
+    }
+//    foreach(int j, resultG)
+//    {
+//        if(j>max)
+//            max=j;
+//        if(j<min)
+//            min=j;
+//    }
+//    foreach(int j, resultB)
+//    {
+//        if(j>max)
+//            max=j;
+//        if(j<min)
+//            min=j;
+//    }
+
+
+
+
+    foreach(int j, resultB)
+    {
+        j=((j-minOfNow)*1.0)*(maxOfOrigin-minOfOrigin)/(maxOfNow-minOfNow)+minOfOrigin;
+
+    }
+
+    for(int i=0;i<fp.count();i++)
+    {
+        QRgb newVal=qRgb(resultR[i],resultG[i],resultB[i]);
+        fp[i].d=newVal;
+    }
 }
 
 void Data::test()
@@ -242,7 +485,10 @@ void Data::test()
             {
                 int ind=index[getId(p)];
                 t.setPixel(x,y,fp[ind].d);
-
+                /*t.setPixel(p,qRgb(vpq[ind].r+128,
+                                  vpq[ind].g+128,
+                                  vpq[ind].b+128));
+*/
             }
             else
                 t.setPixel(x,y,qRgba(0,0,0,0));
@@ -262,4 +508,6 @@ void Data::resetData()
     neighIn.clear();
     neighOut.clear();
     gOmega.clear();
+    fstar.clear();
+    fstarOmega.clear();
 }
